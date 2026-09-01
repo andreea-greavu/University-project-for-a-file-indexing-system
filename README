@@ -1,0 +1,77 @@
+/*GREAVU ANDREEA - MARIA*/
+
+#File indexing system
+    To solve this assignment I needed several data structures:
+1. A doubly linked list for managing files. For each file, I store its id, its relevance score, a singly linked list
+with its associated keywords, and pointers to the previous and next file.
+2. A singly linked list holding keywords (the ones associated with a file)
+3. A multiway retrieval tree, where the left pointer links to the first child and the right pointer to the next sibling. Then, for each node
+I have in "c" the character it holds, a variable "t" marking whether the node is terminal or not, and for terminal nodes, a singly
+linked list with the files that have that word in their word list
+4. A singly linked reference list, in which, as mentioned above, I keep for each word the files that contain it
+5. A max-heap in which I placed the references obtained from the tree, with priority based on the file's score and, in case of a tie, the file
+with the lexicographically smaller identifier
+    I also needed several functions to solve all the requirements, including:
+- Some for allocating/initializing the structures: Alocarefisier, InitArb, Nod, Alocareheap, and for freeing memory:
+DistrLcuv, DistrArb, DistrLfis and Freemem
+- Others for actually fulfilling the requirements:
+1. Addchild:
+    This function adds a child node to a parent node (if it's the first child we put it at left, otherwise we go through the children so the
+siblings stay in lexicographic order)
+2. Insarb:
+    The function walks the multiway tree and if it doesn't find the character it creates a node for it and adds it, and if it happens to be a 
+terminal node, it adds a reference to the corresponding file
+3. ADD
+    The function adds a new file to the system. First I check whether the file already exists, and if so, I print the error message and stop,
+and if not, I put it at the end of the file list, and for each word I check whether it's already in the file's word list, and if not I add it
+both to the tree (calling the previous function) and to the word list, and at the end I print ok, i.e. the message reflecting that the
+operation succeeded
+4. Delcuv
+    The function deletes an entire word from the tree. It recursively searches for the terminal character and if it has no reference to a file,
+it means we will delete it, and in practice we always delete the last character of the word, and we do this until the whole word is deleted
+5. DEL
+    The function deletes a file from the system. It looks it up by id, then removes its reference from the tree. For each keyword, I walk the
+tree and remove the reference to the file. Then I check whether that node happens to be left with no reference to a file, and if so, I call 
+the previous function to remove the whole word. After that, I actually remove the file from the file list, and if the file wasn't found, I 
+print this.
+6. ADDKW
+    The function adds a keyword to a file. I check whether the file exists and then whether it already has that word, and if so I print
+ok, otherwise I add the word to the word list, call the Insarb function to add it to the tree as well, and print Ok. If I don't find the file,
+I print this.
+7. DELKW
+    The function removes a keyword from a file. I look up the file by id, then the word. I walk the tree until I reach the terminal node of
+the word, remove the reference to the file; if it's left with no reference at all, I call Delcuv to delete the whole word, then remove the word
+from the file's word list and print OK. If I have the file but not the word, I again print ok, and if I don't find the file, I print this.
+8. FIND
+    The function prints all files that contain a given keyword. I walk the multiway tree until I find the terminal node of that word.
+Then I count the number of files I have references to, and afterward I put the ids of those files into a vector. Using the qsort function, 
+which calls a function that sorts characters lexicographically, I sort the vector of file ids lexicographically, so that afterward I can print 
+them. If I have files that don't contain any keywords, I remove them from the file list.
+9. RelMaxHeap
+    The function is used to compare heap elements, based on score, or, in case of a tie, by the lexicographically
+smaller identifier
+10. Push up/Push down/Inserare/Extragere
+    These are functions that move an element up/down and insert/extract an element from a heap
+11. TOPK
+    The function finds the k most relevant files associated with a keyword. I walk the tree to the desired terminal node, count its
+reference files, allocate the heap and put the associated files into it, then print only the first k files from the heap, or all of them if 
+their number is less than k.
+12. Parcurgere
+    The function walks the multiway tree and builds, each time, the word along the "branch" we're on. If it happens to be a terminal node it 
+means the word is complete and we save it. Then it continues the same process on the node's children/sibling.
+13. PRINT
+    The function prints all the keywords in the multiway tree. First, by calling the previous function, I put all the words from the tree into 
+a vector. Then, since the words in the vector are already guaranteed to be in lexicographic order, I do the printing. I go through the tree again and,
+once I reach a terminal node, I count its associated files, and take their ids and put them into a vector. That vector I sort lexicographically
+as well, then I print the word, the number of files associated with it, and the ids from the vector, in lexicographic order.
+14. Parc
+    The function recursively walks (through children and then through the sibling) the subtree of a node, and whenever it finds a terminal node, 
+it walks its list of reference files. Their ids I put into a vector, but I always make sure they haven't already been added.
+15. PREFIX
+    The function determines all files that contain at least one keyword starting with a given prefix. I walk the tree until I reach the node of
+the last character of the prefix, and if it happens to be terminal, I keep its files, and I call the previous function to walk its whole subtree, 
+if it has children. Then, the vector containing the file ids is sorted lexicographically with qsort and the comparison function, and I print 
+the number of files and then their ids. If I happen not to find the character while searching, I print empty.
+    In main I initialize the file list and the multiway tree, then read the number of operations and call the Resolve_task function. This function
+reads the command from input and, depending on it, calls one of the functions ADD (for this I build a vector of words containing all the words
+associated with a file), DEL, ADDKW, DELKW, FIND, TOPK, PRINT, PREFIX. Finally, I free all the memory by calling the Freemem function.
