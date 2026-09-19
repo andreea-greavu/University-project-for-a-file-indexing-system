@@ -24,7 +24,7 @@ terminal node, it adds a reference to the corresponding file
 3. ADD
     The function adds a new file to the system. First I check whether the file already exists, and if so, I print the error message and stop,
 and if not, I put it at the end of the file list, and for each word I check whether it's already in the file's word list, and if not I add it
-both to the tree (calling the previous function) and to the word list, and at the end I print ok, i.e. the message reflecting that the
+both to the tree (calling the previous function) and to the word list, and at the end I print ok, the message reflecting that the
 operation succeeded
 4. Delcuv
     The function deletes an entire word from the tree. It recursively searches for the terminal character and if it has no reference to a file,
@@ -66,7 +66,7 @@ once I reach a terminal node, I count its associated files, and take their ids a
 as well, then I print the word, the number of files associated with it, and the ids from the vector, in lexicographic order.
 14. Parc
     The function recursively walks (through children and then through the sibling) the subtree of a node, and whenever it finds a terminal node, 
-it walks its list of reference files. Their ids I put into a vector, but I always make sure they haven't already been added.
+it walks its list of reference files.I put into a vector their ids, always making sure they haven't already been added.
 15. PREFIX
     The function determines all files that contain at least one keyword starting with a given prefix. I walk the tree until I reach the node of
 the last character of the prefix, and if it happens to be terminal, I keep its files, and I call the previous function to walk its whole subtree, 
